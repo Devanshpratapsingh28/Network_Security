@@ -51,7 +51,7 @@ class NetworkDataExtract:
 if __name__ == "__main__" :
     FILE_PATH = "Network_Data/phisingData.csv"
     DATABASE = "DEVANSH"
-    Collection = "NetworkData"
+    Collection = "NetworkData" # Collection is like table
 
     obj = NetworkDataExtract()
     records = obj.csv_to_json_convertor(FILE_PATH)
