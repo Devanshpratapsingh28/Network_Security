@@ -4,4 +4,5 @@
 2. `setup.py`
 3. `networksecurity/logging/logger.py`
 4. `networksecurity/exception/exception.py`
-5. Data - Ingestion Pipeline Building : `constant(training_pipeline/__init__) -> config_entity,artifact_entity -> data_ingestion.py`
+5. Data - Ingestion Pipeline Building : `constant(training_pipeline/__init__) -> entity(config_entity,artifact_entity) -> components(data_ingestion.py)`.
+6. Data - Ingestion Pipeline Building : `constant(training_pipeline/__init__),utils/main_utils/utils.py,data_schema/schema.yaml -> entity(config_entity,artifact_entity) -> components(data_validation.py)`.
