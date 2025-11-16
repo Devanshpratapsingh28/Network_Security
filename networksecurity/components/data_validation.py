@@ -18,13 +18,14 @@ class DataValidation:
         try:
             self.data_ingestion_artifact=data_ingestion_artifact
             self.data_validation_config=data_validation_config
-            self._schema_config = read_yaml_file(SCHEMA_FILE_PATH)
+            self.schema_config = read_yaml_file(SCHEMA_FILE_PATH)
         except Exception as e:
             raise NetworkSecurityException(e,sys)
 
     def validate_number_of_cols(self,df:pd.DataFrame):
         try:
-            no_of_cols = len(self._schema_config)
+            schema_columns = [list(col.keys())[0] for col in self.schema_config["columns"]]
+            no_of_cols = len(schema_columns)
             df_cols_len = len(df.columns)
             logging.info(f"Required columns length : {no_of_cols}")
             logging.info(f"DataFrame columns length : {df_cols_len}")
@@ -73,22 +74,46 @@ class DataValidation:
             train_df = pd.read_csv(train_file_path)
             test_df = pd.read_csv(test_file_path)
 
-            # validate number of columns
+            invalid_report = {}
+            schema_invalid = False
+
             status = self.validate_number_of_cols(train_df)
             if not status:
-                error_message = f"Train dataframe doesn't contains all columns.\n"
+                error_message = "Train dataframe does not match the required schema."
+                logging.error(error_message)
+                invalid_report["train"] = error_message
+                schema_invalid = True
+
             status = self.validate_number_of_cols(test_df)
             if not status:
-                error_message = f"Test dataframe doesn't contains all columns.\n"   
+                error_message = "Test dataframe does not match the required schema."
+                logging.error(error_message)
+                invalid_report["test"] = error_message
+                schema_invalid = True
+
+            if schema_invalid:
+                invalid_dir = os.path.dirname(self.data_validation_config.invalid_report_file_path)
+                os.makedirs(invalid_dir, exist_ok=True)
+
+                write_yaml_file(
+                    file_path=self.data_validation_config.invalid_report_file_path,
+                    content=invalid_report
+                )
+
+                raise NetworkSecurityException(
+                    "Schema validation failed. See invalid report YAML.",
+                    sys
+                )
+            
 
             # Checking Data Drift
-            status=self.detect_dataset_drift(base_df=train_df,current_df=test_df)
-            dir_path=os.path.dirname(self.data_validation_config.valid_train_file_path)
-            os.makedirs(dir_path,exist_ok=True)
+            status = self.detect_dataset_drift(base_df=train_df, current_df=test_df)
+
+            dir_path = os.path.dirname(self.data_validation_config.valid_train_file_path)
+            os.makedirs(dir_path, exist_ok=True)
 
             train_df.to_csv(
                 self.data_validation_config.valid_train_file_path, index=False, header=True
-
             )
 
             test_df.to_csv(
@@ -99,11 +124,10 @@ class DataValidation:
                 validation_status=status,
                 valid_train_file_path=self.data_ingestion_artifact.trained_file_path,
                 valid_test_file_path=self.data_ingestion_artifact.test_file_path,
-                invalid_train_file_path=None,
-                invalid_test_file_path=None,
+                invalid_report_file_path=self.data_validation_config.invalid_report_file_path,
                 drift_report_file_path=self.data_validation_config.drift_report_file_path,
             )
             return data_validation_artifact
 
         except Exception as e:
-            raise NetworkSecurityException(e,sys)    
+            raise NetworkSecurityException(e,sys)

@@ -2,8 +2,9 @@ import os
 import sys
 import yaml
 import numpy as np
-import dill
 import pickle
+from sklearn.metrics import f1_score
+from sklearn.model_selection import GridSearchCV
 
 from networksecurity.exception.exception import NetworkSecurityException
 from networksecurity.logging.logger import logging
@@ -49,4 +50,58 @@ def save_object(file_path: str, obj: object) -> None:
         logging.info("Exited the save_object method of main_Utils/utils file.")
     except Exception as e:
         raise NetworkSecurityException(e, sys) from e
-        
+    
+def load_object(file_path: str, ) -> object:
+    try:
+        if not os.path.exists(file_path):
+            raise Exception(f"The file: {file_path} is not exists")
+        with open(file_path, "rb") as file_obj:
+            print(file_obj)
+            return pickle.load(file_obj)
+    except Exception as e:
+        raise NetworkSecurityException(e, sys) from e
+    
+def load_numpy_array_data(file_path: str) -> np.array:
+    """
+    load numpy array data from file
+    file_path: str location of file to load
+    return: np.array data loaded
+    """
+    try:
+        with open(file_path, "rb") as file_obj:
+            return np.load(file_obj)
+    except Exception as e:
+        raise NetworkSecurityException(e, sys) from e  
+
+def evaluate_models(X_train, y_train, X_test, y_test, models, params):
+    try:
+        report = {}
+        best_estimators = {}
+
+        for model_name, model in models.items():
+
+            param_grid = params[model_name]
+
+            gs = GridSearchCV(
+                model,
+                param_grid,
+                scoring="f1",
+                cv=3,
+                n_jobs=-1,
+                verbose=1
+            )
+            gs.fit(X_train, y_train)
+
+            best_model = gs.best_estimator_
+
+            y_test_pred = best_model.predict(X_test)
+
+            test_score = f1_score(y_test, y_test_pred)
+
+            report[model_name] = test_score
+            best_estimators[model_name] = best_model
+
+        return report, best_estimators
+
+    except Exception as e:
+        raise NetworkSecurityException(e, sys)
