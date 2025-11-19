@@ -7,4 +7,14 @@
 5. Data - Ingestion Pipeline Building : `constant(training_pipeline/__init__) -> entity(config_entity,artifact_entity) -> components(data_ingestion.py)`.
 6. Data - Validation Pipeline Building : `constant(training_pipeline/__init__),utils/main_utils/utils.py,data_schema/schema.yaml -> entity(config_entity,artifact_entity) -> components(data_validation.py)`.
 7. Data - Transformation Pipeline Building : `constant(training_pipeline/__init__),utils/main_utils/utils.py -> entity(config_entity,artifact_entity) -> components(data_transformation.py)`.
-8. Model - Trainer : 
+8. Model - Trainer : `constant(training_pipeline/__init__),utils/main_utils/utils.py -> entity(config_entity,artifact_entity) -> components(model_trainer.py)`. We also integrated mlflow with dagshub for model tracking and logging.
+9. 
+
+
+
+
+## Errors that I got:
+1. Compaltibility error between mlflow and dagshub.
+    - Description: While integrating mlflow with dagshub, I encountered compatibility issues that prevented seamless logging and tracking of machine learning experiments.It was beacause of version mismatch, as dagshub required an older version of mlflow.
+    - Solution: I resolved this by downgrading mlflow to version 2.9.2, which is compatible with dagshub. This allowed me to successfully log models and metrics to dagshub without any further compatibility issues.
+

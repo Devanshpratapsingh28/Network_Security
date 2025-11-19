@@ -17,6 +17,9 @@ from sklearn.ensemble import (
     RandomForestClassifier,
 )
 import mlflow
+import dagshub
+dagshub.init(repo_owner='devanshprataps6', repo_name='Network_Security', mlflow=True)
+
 
 class ModelTrainer:
 
@@ -35,7 +38,9 @@ class ModelTrainer:
             mlflow.log_metric("f1_score",f1_score)
             mlflow.log_metric("precision",precision_score)
             mlflow.log_metric("recall_score",recall_score)
-            mlflow.sklearn.log_model(best_model,"model")    
+            mlflow.sklearn.log_model(best_model, artifact_path="model")
+
+            
 
 
         
@@ -98,8 +103,9 @@ class ModelTrainer:
 
         Network_Model=NetworkModel(preprocessor=preprocessor,model=best_model)
         save_object(self.model_trainer_config.trained_model_file_path,obj=NetworkModel)
-        #model pusher
-        # save_object("final_model/model.pkl",best_model)
+
+        # model pusher
+        save_object("final_model/model.pkl",best_model)
         
 
         ## Model Trainer Artifact
