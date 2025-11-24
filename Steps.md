@@ -18,3 +18,6 @@
     - Description: While integrating mlflow with dagshub, I encountered compatibility issues that prevented seamless logging and tracking of machine learning experiments.It was beacause of version mismatch, as dagshub required an older version of mlflow.
     - Solution: I resolved this by downgrading mlflow to version 2.9.2, which is compatible with dagshub. This allowed me to successfully log models and metrics to dagshub without any further compatibility issues.
 
+
+## FASTAPI run command:
+`uvicorn app:app --host localhost --port 8000 --reload`

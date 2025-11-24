@@ -8,4 +8,6 @@ dill
 PyYAML
 mlflow==2.9.2
 dagshub
+fastapi
+uvicorn # Fast API used this
 # -e .

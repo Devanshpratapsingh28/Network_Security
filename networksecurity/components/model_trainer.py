@@ -23,7 +23,7 @@ dagshub.init(repo_owner='devanshprataps6', repo_name='Network_Security', mlflow=
 
 class ModelTrainer:
 
-    def __init__(self,model_trainer_config:ModelTrainerConfig,data_transformation_artifact:DataTransformationArtifact):
+    def __init__(self,data_transformation_artifact,model_trainer_config):
         try:
             self.model_trainer_config=model_trainer_config
             self.data_transformation_artifact=data_transformation_artifact
