@@ -11,5 +11,5 @@ class NetworkSecurityException(Exception):
         self.fun_name = exc_tb.tb_frame.f_code.co_name
     
     def __str__(self):
-        return f"Error occured in python script name {self.file_name} line number {self.lineno} error message {str(self.error_message)}, fun_name = {self.fun_name}"
+        return f"Error occured in python file name {self.file_name} at line number {self.lineno} having error message {str(self.error_message)}."
         

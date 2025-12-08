@@ -27,7 +27,7 @@ def write_yaml_file(file_path, content, replace = False) -> None:
     except Exception as e:
         raise NetworkSecurityException(e, sys)
 
-def save_numpy_array_data(file_path: str, array: np.array):
+def save_numpy_array_data(file_path, array):
     """
     Save numpy array data to file
     file_path: str location of file to save
@@ -41,7 +41,7 @@ def save_numpy_array_data(file_path: str, array: np.array):
     except Exception as e:
         raise NetworkSecurityException(e, sys) from e
     
-def save_object(file_path: str, obj: object) -> None:
+def save_object(file_path, obj):
     try:
         logging.info("Entered the save_object method of main_Utils/utils file.")
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
@@ -51,7 +51,7 @@ def save_object(file_path: str, obj: object) -> None:
     except Exception as e:
         raise NetworkSecurityException(e, sys) from e
     
-def load_object(file_path: str, ) -> object:
+def load_object(file_path):
     try:
         if not os.path.exists(file_path):
             raise Exception(f"The file: {file_path} is not exists")
@@ -61,7 +61,7 @@ def load_object(file_path: str, ) -> object:
     except Exception as e:
         raise NetworkSecurityException(e, sys) from e
     
-def load_numpy_array_data(file_path: str) -> np.array:
+def load_numpy_array_data(file_path):
     """
     load numpy array data from file
     file_path: str location of file to load
@@ -79,9 +79,7 @@ def evaluate_models(X_train, y_train, X_test, y_test, models, params):
         best_estimators = {}
 
         for model_name, model in models.items():
-
             param_grid = params[model_name]
-
             gs = GridSearchCV(
                 model,
                 param_grid,
@@ -91,13 +89,9 @@ def evaluate_models(X_train, y_train, X_test, y_test, models, params):
                 verbose=1
             )
             gs.fit(X_train, y_train)
-
             best_model = gs.best_estimator_
-
             y_test_pred = best_model.predict(X_test)
-
             test_score = f1_score(y_test, y_test_pred)
-
             report[model_name] = test_score
             best_estimators[model_name] = best_model
 

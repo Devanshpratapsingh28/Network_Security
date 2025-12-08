@@ -6,12 +6,9 @@ from sklearn.impute import KNNImputer
 from sklearn.pipeline import Pipeline
 from networksecurity.exception.exception import NetworkSecurityException 
 from networksecurity.logging.logger import logging
-
 from networksecurity.constant.training_pipeline import TARGET_COLUMN
 from networksecurity.constant.training_pipeline import DATA_TRANSFORMATION_IMPUTER_PARAMS
-
 from networksecurity.entity.artifact_entity import DataTransformationArtifact,DataValidationArtifact
-
 from networksecurity.entity.config_entity import DataTransformationConfig
 from networksecurity.utils.main_utils.utils import save_numpy_array_data,save_object
 
@@ -32,11 +29,11 @@ class DataTransformation:
             "Entered get_data_trnasformer_object method of Trnasformation class"
         )
         try:
-           imputer:KNNImputer=KNNImputer(**DATA_TRANSFORMATION_IMPUTER_PARAMS)
+           imputer=KNNImputer(**DATA_TRANSFORMATION_IMPUTER_PARAMS)
            logging.info(
                 f"Initialise KNNImputer with {DATA_TRANSFORMATION_IMPUTER_PARAMS}"
             )
-           processor:Pipeline=Pipeline([("imputer",imputer)])
+           processor=Pipeline([("imputer",imputer)])
            return processor
         except Exception as e:
             raise NetworkSecurityException(e,sys)
