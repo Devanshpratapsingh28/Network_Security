@@ -28,4 +28,11 @@ First, you need to configure your AWS credentials to allow the application to ac
 ```bash
 aws configure
 ```
+## apt vs apt-get :
+- Both do the same job → install/update software on Ubuntu/Debian.
+- apt → newer, user-friendly → best for manual use.
+- apt-get → older, stable → best for scripts & Docker.
 
+## Explanation of commands used in Dockerfile:
+1. apt install awscli -y - It installs the AWS CLI tool for interacting with AWS services
+2. apt-get update - It updates the package lists for upgrades and new package installations.
