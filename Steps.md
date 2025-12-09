@@ -8,7 +8,7 @@
 6. Data - Validation Pipeline Building : `constant(training_pipeline/__init__),utils/main_utils/utils.py,data_schema/schema.yaml -> entity(config_entity,artifact_entity) -> components(data_validation.py)`.
 7. Data - Transformation Pipeline Building : `constant(training_pipeline/__init__),utils/main_utils/utils.py -> entity(config_entity,artifact_entity) -> components(data_transformation.py)`.
 8. Model - Trainer : `constant(training_pipeline/__init__),utils/main_utils/utils.py -> entity(config_entity,artifact_entity) -> components(model_trainer.py)`. We also integrated mlflow with dagshub for model tracking and logging.
-9. 
+9. AWS S3 Bucket : `constant(training_pipeline/__init__),utils/main_utils/utils.py -> entity(config_entity,artifact_entity) -> components(s3_bucket.py)`.
 
 
 
@@ -19,5 +19,13 @@
     - Solution: I resolved this by downgrading mlflow to version 2.9.2, which is compatible with dagshub. This allowed me to successfully log models and metrics to dagshub without any further compatibility issues.
 
 
-## FASTAPI run command:
+## FastAPI run command:
 `uvicorn app:app --host localhost --port 8000 --reload`
+
+## AWS Configuration Command:
+First, you need to configure your AWS credentials to allow the application to access AWS services like S3. Create S3 bucket and configure your AWS credentials using the following command:
+
+```bash
+aws configure
+```
+
