@@ -6,6 +6,5 @@ COPY . /app
 RUN apt-get update -y \
     && apt-get install -y gcc \
     && pip install -r requirements.txt \
-    && rm -rf /var/lib/apt/lists/*
 
 CMD ["python", "app.py"]
