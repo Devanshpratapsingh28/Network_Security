@@ -46,7 +46,9 @@ aws configure
 2. SSH into the instance.
 3. Update package lists: sudo apt-get update, sudo apt-get upgrade -y
 4. Install Docker: 
-    - curl -fsSL https://get.docker.com -o get-docker.sh # download Docker installation script
-    - sudo sh get-docker.sh # run the script to install Docker
-    - sudo usermod -aG docker ubuntu # add ubuntu user to docker group
-    - newgrp docker # apply new group membership
+    ```bash
+    curl -fsSL https://get.docker.com -o get-docker.sh # download Docker installation script
+    sudo sh get-docker.sh # run the script to install Docker
+    sudo usermod -aG docker ubuntu # add ubuntu user to docker group
+    newgrp docker # apply new group membership
+    ```
