@@ -1,0 +1,4 @@
+test: Test dataframe does not match the required schema either wrong columns are their
+  or columns order differ the actual schema.
+train: Train dataframe does not match the required schema either wrong columns are
+  their or columns order differ the actual schema.

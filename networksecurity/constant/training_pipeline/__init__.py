@@ -34,9 +34,7 @@ Data Validation related constant
 DATA_VALIDATION_DIR_NAME = "data_validation"
 DATA_VALIDATION_VALID_DIR = "validated"
 DATA_VALIDATION_INVALID_DIR = "invalid"
-DATA_VALIDATION_DRIFT_REPORT_DIR = "drift_report"
 DATA_VALIDATION_SCHEMA_INVALID_REPORT_FILE_NAME = "invalid_schema_report.yaml"
-DATA_VALIDATION_DRIFT_REPORT_FILE_NAME = "drift_report.yaml"
 
 """
 Data Transformation related constant

@@ -7,7 +7,6 @@ from networksecurity.entity.config_entity import DataValidationConfig
 from networksecurity.entity.artifact_entity import DataIngestionArtifact,DataValidationArtifact
 from networksecurity.constant.training_pipeline import SCHEMA_FILE_PATH
 from networksecurity.utils.main_utils.utils import read_yaml_file,write_yaml_file
-from scipy.stats import ks_2samp
 import pandas as pd
 
 class DataValidation:
@@ -36,35 +35,11 @@ class DataValidation:
         except Exception as e:
             raise NetworkSecurityException(e,sys)
         
-    def detect_dataset_drift(self,base_df,current_df,threshold=0.05):
-        try:
-            report={}
-            status=True
-            for column in base_df.columns:
-                d1=base_df[column]
-                d2=current_df[column]
-                val=ks_2samp(d1,d2) # It checks data drift between two columns
-                if threshold<=val.pvalue:
-                    is_found=False
-                else:
-                    is_found=True
-                    status=False
-                report.update({
-                    column:{
-                        "p_value":float(val.pvalue),
-                        "drift_status":is_found
-                    }
-                })
-            drift_report_file_path = self.data_validation_config.drift_report_file_path
+    def validate_col_names(self, df: pd.DataFrame):
+        schema_columns = [list(col.keys())[0] for col in self.schema_config["columns"]]
+        df_columns = list(df.columns)
+        return schema_columns == df_columns
 
-            #Create directory
-            dir_path = os.path.dirname(drift_report_file_path)
-            os.makedirs(dir_path,exist_ok=True)
-            write_yaml_file(file_path=drift_report_file_path,content=report)
-
-        except Exception as e:
-            raise NetworkSecurityException(e,sys)    
-        
     def initiate_data_validation(self) -> DataValidationArtifact:
         try :
             train_file_path = self.data_ingestion_artifact.trained_file_path
@@ -75,57 +50,60 @@ class DataValidation:
             test_df = pd.read_csv(test_file_path)
 
             invalid_report = {}
-            schema_invalid = False
 
+            # Validating with number of columns and actual column names.
+            schema_invalid_train = False
             status = self.validate_number_of_cols(train_df)
             if not status:
-                error_message = "Train dataframe does not match the required schema."
+                error_message = "Train dataframe does not have same number of columns as desired schema."
                 logging.error(error_message)
                 invalid_report["train"] = error_message
-                schema_invalid = True
+                schema_invalid_train = True
 
+            if not schema_invalid_train:
+                status = self.validate_col_names(train_df)    
+                if not status:
+                    error_message = "Train dataframe does not match the required schema either wrong columns are their or columns order differ the actual schema."
+                    logging.error(error_message)
+                    invalid_report["train"] = error_message
+                    schema_invalid_train = True
+
+            schema_invalid_test = False
             status = self.validate_number_of_cols(test_df)
             if not status:
-                error_message = "Test dataframe does not match the required schema."
+                error_message = "Test dataframe does not have same number of columns as desired schema."
                 logging.error(error_message)
                 invalid_report["test"] = error_message
-                schema_invalid = True
+                schema_invalid_test = True
 
-            if schema_invalid:
+            if not schema_invalid_test:
+                status = self.validate_col_names(test_df)  
+                if not status:
+                    error_message = "Test dataframe does not match the required schema either wrong columns are their or columns order differ the actual schema."
+                    logging.error(error_message)
+                    invalid_report["test"] = error_message
+                    schema_invalid_test = True
+
+            if schema_invalid_train or schema_invalid_test:
                 invalid_dir = os.path.dirname(self.data_validation_config.invalid_report_file_path)
                 os.makedirs(invalid_dir, exist_ok=True)
+                write_yaml_file(file_path=self.data_validation_config.invalid_report_file_path,content=invalid_report)
+                raise NetworkSecurityException("Schema validation failed. See invalid report for details.",sys)
 
-                write_yaml_file(
-                    file_path=self.data_validation_config.invalid_report_file_path,
-                    content=invalid_report
-                )
-
-                raise NetworkSecurityException(
-                    "Schema validation failed. See invalid report YAML.",
-                    sys
-                )
-            
-
-            # Checking Data Drift
-            status = self.detect_dataset_drift(base_df=train_df, current_df=test_df)
+            status = True  
 
             dir_path = os.path.dirname(self.data_validation_config.valid_train_file_path)
             os.makedirs(dir_path, exist_ok=True)
 
-            train_df.to_csv(
-                self.data_validation_config.valid_train_file_path, index=False, header=True
-            )
+            train_df.to_csv(self.data_validation_config.valid_train_file_path, index=False, header=True)
 
-            test_df.to_csv(
-                self.data_validation_config.valid_test_file_path, index=False, header=True
-            )
+            test_df.to_csv(self.data_validation_config.valid_test_file_path, index=False, header=True)
             
             data_validation_artifact = DataValidationArtifact(
-                validation_status=status,
-                valid_train_file_path=self.data_ingestion_artifact.trained_file_path,
-                valid_test_file_path=self.data_ingestion_artifact.test_file_path,
-                invalid_report_file_path=self.data_validation_config.invalid_report_file_path,
-                drift_report_file_path=self.data_validation_config.drift_report_file_path,
+                validation_status=status, 
+                valid_train_file_path=self.data_validation_config.valid_train_file_path,  
+                valid_test_file_path=self.data_validation_config.valid_test_file_path,    
+                invalid_report_file_path=self.data_validation_config.invalid_report_file_path
             )
             return data_validation_artifact
 

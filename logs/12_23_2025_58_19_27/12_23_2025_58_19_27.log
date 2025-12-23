@@ -1,0 +1,24 @@
+[ 2025-12-23 19:58:31,550 ] 1025 httpx - INFO - HTTP Request: GET https://dagshub.com/api/v1/user "HTTP/1.1 200 OK"
+[ 2025-12-23 19:58:31,560 ] 107 dagshub - INFO - Accessing as devanshprataps6
+[ 2025-12-23 19:58:32,408 ] 1025 httpx - INFO - HTTP Request: GET https://dagshub.com/api/v1/repos/devanshprataps6/Network_Security "HTTP/1.1 200 OK"
+[ 2025-12-23 19:58:33,666 ] 1025 httpx - INFO - HTTP Request: GET https://dagshub.com/api/v1/user "HTTP/1.1 200 OK"
+[ 2025-12-23 19:58:33,671 ] 107 dagshub - INFO - Initialized MLflow to track repo "devanshprataps6/Network_Security"
+[ 2025-12-23 19:58:33,671 ] 107 dagshub - INFO - Repository devanshprataps6/Network_Security initialized!
+[ 2025-12-23 19:58:33,671 ] 17 root - INFO - Initiate the Data Ingestion
+[ 2025-12-23 19:58:38,763 ] 61 root - INFO - Performed train test split on the dataframe
+[ 2025-12-23 19:58:38,763 ] 62 root - INFO - Exited split_data_as_train_test method of Data_Ingestion class
+[ 2025-12-23 19:58:38,763 ] 67 root - INFO - Exporting train and test file path.
+[ 2025-12-23 19:58:38,794 ] 74 root - INFO - Exported train and test file path.
+[ 2025-12-23 19:58:38,794 ] 19 root - INFO - Data Ingestion Completed
+[ 2025-12-23 19:58:38,796 ] 24 root - INFO - Initiate the Data Validation
+[ 2025-12-23 19:58:38,807 ] 29 root - INFO - Required columns length : 31
+[ 2025-12-23 19:58:38,807 ] 30 root - INFO - DataFrame columns length : 31
+[ 2025-12-23 19:58:38,807 ] 29 root - INFO - Required columns length : 31
+[ 2025-12-23 19:58:38,807 ] 30 root - INFO - DataFrame columns length : 31
+[ 2025-12-23 19:58:38,839 ] 26 root - INFO - Data Validation Completed
+[ 2025-12-23 19:58:38,839 ] 30 root - INFO - Initiate the Data Transformation
+[ 2025-12-23 19:58:38,839 ] 65 root - INFO - Entered initiate_data_transformation method of DataTransformation class
+[ 2025-12-23 19:58:38,839 ] 67 root - INFO - Starting data transformation
+[ 2025-12-23 19:58:38,847 ] 73 root - INFO - Applying Feature Engineering on training and testing dataframe
+[ 2025-12-23 19:58:38,853 ] 76 root - INFO - Feature Engineering applied successfully
+[ 2025-12-23 19:58:38,864 ] 32 root - INFO - Data Transformation Completed
