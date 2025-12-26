@@ -4,7 +4,7 @@ import yaml
 import numpy as np
 import pickle
 from sklearn.metrics import f1_score
-from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import StratifiedKFold,RandomizedSearchCV
 
 from networksecurity.exception.exception import NetworkSecurityException
 from networksecurity.logging.logger import logging
@@ -61,37 +61,21 @@ def load_object(file_path):
     except Exception as e:
         raise NetworkSecurityException(e, sys) from e
     
-def load_numpy_array_data(file_path):
-    """
-    load numpy array data from file
-    file_path: str location of file to load
-    return: np.array data loaded
-    """
-    try:
-        with open(file_path, "rb") as file_obj:
-            return np.load(file_obj)
-    except Exception as e:
-        raise NetworkSecurityException(e, sys) from e  
-
 def evaluate_models(X_train, y_train, X_test, y_test, models, params):
     try:
         report = {}
         best_estimators = {}
 
+        cv = StratifiedKFold(n_splits=3, shuffle=True, random_state=42)
+
         for model_name, model in models.items():
             param_grid = params[model_name]
-            gs = GridSearchCV(
-                model,
-                param_grid,
-                scoring="f1",
-                cv=3,
-                n_jobs=-1,
-                verbose=1
-            )
-            gs.fit(X_train, y_train)
-            best_model = gs.best_estimator_
+            random_search = RandomizedSearchCV(model,param_grid,scoring="f1",cv=cv,n_jobs=-1,verbose=1,n_iter=50,random_state=42)
+            random_search.fit(X_train, y_train)
+            best_model = random_search.best_estimator_
             y_test_pred = best_model.predict(X_test)
             test_score = f1_score(y_test, y_test_pred)
+
             report[model_name] = test_score
             best_estimators[model_name] = best_model
 
@@ -99,3 +83,4 @@ def evaluate_models(X_train, y_train, X_test, y_test, models, params):
 
     except Exception as e:
         raise NetworkSecurityException(e, sys)
+

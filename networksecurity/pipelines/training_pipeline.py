@@ -19,7 +19,6 @@ from networksecurity.entity.artifact_entity import (
     DataIngestionArtifact,
     DataValidationArtifact,
     DataTransformationArtifact,
-    ModelTrainerArtifact,
 )
 
 from networksecurity.constant.training_pipeline import TRAINING_BUCKET_NAME,SAVED_MODEL_DIR
@@ -69,7 +68,7 @@ class TrainingPipeline:
             logging.info("Model Trainer started ....")
             model_trainer = ModelTrainer(data_transformation_artifact,model_trainer_config)
             model_trainer_artifact = model_trainer.initiate_model_trainer()
-            logging.info(f"Model Trainer completed and artifact: {data_transformation_artifact}")
+            logging.info(f"Model Trainer completed and artifact: {model_trainer_artifact}")
             return model_trainer_artifact
 
         except Exception as e:

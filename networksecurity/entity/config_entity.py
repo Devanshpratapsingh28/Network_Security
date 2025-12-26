@@ -60,5 +60,5 @@ class ModelTrainerConfig:
             self.model_trainer_dir, training_pipeline.MODEL_TRAINER_TRAINED_MODEL_DIR, 
             training_pipeline.MODEL_FILE_NAME
         )
-        self.overfitting_underfitting_threshold = training_pipeline.MODEL_TRAINER_OVER_FIITING_UNDER_FITTING_THRESHOLD
+        self.overfitting_underfitting_threshold = training_pipeline.MODEL_TRAINER_OVER_FITTING_UNDER_FITTING_THRESHOLD
         self.expected_accuracy = training_pipeline.MODEL_TRAINER_EXPECTED_SCORE

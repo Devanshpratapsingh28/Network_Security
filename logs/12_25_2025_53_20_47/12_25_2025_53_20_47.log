@@ -1,0 +1,31 @@
+[ 2025-12-25 20:53:51,188 ] 1025 httpx - INFO - HTTP Request: GET https://dagshub.com/api/v1/user "HTTP/1.1 200 OK"
+[ 2025-12-25 20:53:51,191 ] 107 dagshub - INFO - Accessing as devanshprataps6
+[ 2025-12-25 20:53:53,033 ] 1025 httpx - INFO - HTTP Request: GET https://dagshub.com/api/v1/repos/devanshprataps6/Network_Security "HTTP/1.1 200 OK"
+[ 2025-12-25 20:53:54,398 ] 1025 httpx - INFO - HTTP Request: GET https://dagshub.com/api/v1/user "HTTP/1.1 200 OK"
+[ 2025-12-25 20:53:54,399 ] 107 dagshub - INFO - Initialized MLflow to track repo "devanshprataps6/Network_Security"
+[ 2025-12-25 20:53:54,399 ] 107 dagshub - INFO - Repository devanshprataps6/Network_Security initialized!
+[ 2025-12-25 20:54:22,780 ] 35 root - INFO - Data Ingestion started ....
+[ 2025-12-25 20:54:28,920 ] 61 root - INFO - Performed train test split on the dataframe
+[ 2025-12-25 20:54:28,920 ] 62 root - INFO - Exited split_data_as_train_test method of Data_Ingestion class
+[ 2025-12-25 20:54:28,920 ] 67 root - INFO - Exporting train and test file path.
+[ 2025-12-25 20:54:28,948 ] 74 root - INFO - Exported train and test file path.
+[ 2025-12-25 20:54:28,948 ] 38 root - INFO - Data Ingestion completed and artifact: DataIngestionArtifact(trained_file_path='Artifacts/12_25_2025_20_53_47/data_ingestion/ingested/train.csv', test_file_path='Artifacts/12_25_2025_20_53_47/data_ingestion/ingested/test.csv')
+[ 2025-12-25 20:54:28,949 ] 46 root - INFO - Data Validation started ....
+[ 2025-12-25 20:54:28,965 ] 29 root - INFO - Required columns length : 31
+[ 2025-12-25 20:54:28,965 ] 30 root - INFO - DataFrame columns length : 31
+[ 2025-12-25 20:54:28,965 ] 29 root - INFO - Required columns length : 31
+[ 2025-12-25 20:54:28,965 ] 30 root - INFO - DataFrame columns length : 31
+[ 2025-12-25 20:54:28,994 ] 49 root - INFO - Data Validation completed and artifact: DataValidationArtifact(validation_status=True, valid_train_file_path='Artifacts/12_25_2025_20_53_47/data_validation/validated/train.csv', valid_test_file_path='Artifacts/12_25_2025_20_53_47/data_validation/validated/test.csv', invalid_report_file_path='Artifacts/12_25_2025_20_53_47/data_validation/invalid/invalid_schema_report.yaml')
+[ 2025-12-25 20:54:28,994 ] 57 root - INFO - Data Transformation started ....
+[ 2025-12-25 20:54:28,994 ] 19 root - INFO - Entered initiate_data_transformation method of DataTransformation class
+[ 2025-12-25 20:54:28,994 ] 21 root - INFO - Starting data transformation
+[ 2025-12-25 20:54:29,008 ] 27 root - INFO - Applying Feature Engineering on training and testing dataframe
+[ 2025-12-25 20:54:29,014 ] 30 root - INFO - Feature Engineering applied successfully
+[ 2025-12-25 20:54:29,024 ] 60 root - INFO - Data Transformation completed and artifact: DataTransformationArtifact(transformed_train_file_path='Artifacts/12_25_2025_20_53_47/data_transformation/transformed/train.csv', transformed_test_file_path='Artifacts/12_25_2025_20_53_47/data_transformation/transformed/test.csv')
+[ 2025-12-25 20:54:29,024 ] 68 root - INFO - Model Trainer started ....
+[ 2025-12-25 20:54:58,322 ] 46 root - INFO - Entered the save_object method of main_Utils/utils file.
+[ 2025-12-25 20:54:58,370 ] 50 root - INFO - Exited the save_object method of main_Utils/utils file.
+[ 2025-12-25 20:54:58,370 ] 46 root - INFO - Entered the save_object method of main_Utils/utils file.
+[ 2025-12-25 20:54:58,392 ] 50 root - INFO - Exited the save_object method of main_Utils/utils file.
+[ 2025-12-25 20:54:58,392 ] 122 root - INFO - Model trainer artifact: ModelTrainerArtifact(trained_model_file_path='Artifacts/12_25_2025_20_53_47/model_trainer/trained_model/model.pkl', train_metric_artifact=ClassificationMetricArtifact(f1_score=0.918648310387985, precision_score=0.9444563585674458, recall_score=0.8942131979695431), test_metric_artifact=ClassificationMetricArtifact(f1_score=0.9184514003294892, precision_score=0.9322742474916388, recall_score=0.9050324675324676))
+[ 2025-12-25 20:54:58,396 ] 71 root - INFO - Model Trainer completed and artifact: ModelTrainerArtifact(trained_model_file_path='Artifacts/12_25_2025_20_53_47/model_trainer/trained_model/model.pkl', train_metric_artifact=ClassificationMetricArtifact(f1_score=0.918648310387985, precision_score=0.9444563585674458, recall_score=0.8942131979695431), test_metric_artifact=ClassificationMetricArtifact(f1_score=0.9184514003294892, precision_score=0.9322742474916388, recall_score=0.9050324675324676))
