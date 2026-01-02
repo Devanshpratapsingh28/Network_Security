@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Security Predictor</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Network Security Predictor</h1>
+        <form id="predictForm">
+            <input type="file" id="fileInput" accept=".csv,.txt,.json" required>
+            <button type="submit">Predict</button>
+        </form>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        document.getElementById('predictForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const fileInput = document.getElementById('fileInput');
+            const resultDiv = document.getElementById('result');
+            
+            if (!fileInput.files[0]) {
+                resultDiv.textContent = 'Please select a file.';
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            
+            resultDiv.textContent = 'Processing...';
+            
+            try {
+                const response = await fetch('http://16.170.205.221:8000/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                // Build table
+                let tableHTML = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>URL</th>
+                                <th>Prediction</th>
+                                <th>Non-malicious Confidence</th>
+                                <th>Malicious Confidence</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                for (const [url, details] of Object.entries(data)) {
+                    tableHTML += `
+                        <tr>
+                            <td>${url}</td>
+                            <td>${details.prediction}</td>
+                            <td>${details.confidence['non-malicious']}</td>
+                            <td>${details.confidence['malicious']}</td>
+                        </tr>
+                    `;
+                }
+                
+                tableHTML += `
+                        </tbody>
+                    </table>
+                `;
+                
+                resultDiv.innerHTML = tableHTML;
+            } catch (error) {
+                resultDiv.textContent = 'Error: ' + error.message;
+            }
+        });
+    </script>
+</body>
+</html>

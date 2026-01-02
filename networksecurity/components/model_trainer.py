@@ -6,7 +6,7 @@ from networksecurity.logging.logger import logging
 from networksecurity.entity.artifact_entity import DataTransformationArtifact,ModelTrainerArtifact
 from networksecurity.entity.config_entity import ModelTrainerConfig
 from networksecurity.utils.ml_utils.model.estimator import NetworkModel
-from networksecurity.constant.training_pipeline import TARGET_COLUMN
+from networksecurity.constant.training_pipeline import TARGET_COLUMN,SAVED_MODEL_DIR
 from networksecurity.utils.main_utils.utils import evaluate_models,save_object,load_object
 from networksecurity.utils.ml_utils.metric.classification_metric import get_classification_score
 from sklearn.svm import SVC
@@ -110,9 +110,11 @@ class ModelTrainer:
         )
         save_object(self.model_trainer_config.trained_model_file_path, obj=Network_Model)
         
-        # Save raw model to final_model directory
-        os.makedirs("final_model", exist_ok=True)
-        save_object("final_model/model.pkl", best_model)
+        # Save raw model to SAVED_MODEL_DIR
+        os.makedirs(SAVED_MODEL_DIR, exist_ok=True)
+        model_path = os.path.join(SAVED_MODEL_DIR, "model.pkl")
+        save_object(model_path, obj=best_model)
+        
         
         model_trainer_artifact = ModelTrainerArtifact(
             trained_model_file_path=self.model_trainer_config.trained_model_file_path,

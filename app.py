@@ -1,37 +1,61 @@
 import os
 import sys
-import certifi
-ca = certifi.where()
-
-import yaml
-from dotenv import load_dotenv
-load_dotenv()
-
-mongo_db_url = os.getenv("MONGODB_URL_KEY")
-print(mongo_db_url)
-
-import pymongo
-from networksecurity.exception.exception import NetworkSecurityException
-from networksecurity.logging.logger import logging
-from networksecurity.pipelines.training_pipeline import TrainingPipeline
 import pandas as pd
-from networksecurity.utils.main_utils.utils import read_yaml_file, load_object
-from networksecurity.utils.ml_utils.model.estimator import NetworkModel
+from dotenv import load_dotenv
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 
-from networksecurity.constant.training_pipeline import (
-    DATA_INGESTION_COLLECTION_NAME,
-    DATA_INGESTION_DATABASE_NAME
+from networksecurity.utils.main_utils.utils import read_yaml_file, load_object
+from networksecurity.utils.ml_utils.model.estimator import NetworkModel
+from networksecurity.exception.exception import NetworkSecurityException
+from networksecurity.pipelines.training_pipeline import TrainingPipeline
+
+# Loading environment variables
+load_dotenv()
+
+SCHEMA_FILE_PATH = os.getenv("SCHEMA_FILE_PATH")
+MODEL_FILE_PATH = os.getenv("MODEL_FILE_PATH")
+
+if not SCHEMA_FILE_PATH or not MODEL_FILE_PATH:
+    raise RuntimeError("SCHEMA and MODEL file path must be set.")
+
+# Global objects
+schema = None
+model = None
+network_model = None
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    event handler for loading artifacts.
+    """
+    global schema, model, network_model
+    try:
+        schema = read_yaml_file(SCHEMA_FILE_PATH)
+        model = load_object(MODEL_FILE_PATH)
+        network_model = NetworkModel(model=model)
+        yield
+    finally:
+        pass    
+
+app = FastAPI(
+    title="Phishing URL Identifier API",
+    lifespan=lifespan,
+    description="API for predicting whether a given URL is malicious (i.e. phishing URL) or non-malicious.",
 )
 
-client = pymongo.MongoClient(mongo_db_url, tlsCAFile=ca)
-
-database = client[DATA_INGESTION_DATABASE_NAME]
-collection = database[DATA_INGESTION_COLLECTION_NAME]
-
-app = FastAPI()
+# CORS Enabled
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/")
@@ -39,12 +63,9 @@ def index():
     return {"message": "Welcome to the Network Security API"}
 
 
-@app.get("/about")
-def about():
-    return {
-        "message": "This API is used to predict whether given URL is malicious(i.e phishing) or benign."
-    }
-
+@app.get("/health")
+def health():
+    return {"status": "ok"}
 
 @app.get("/train")
 def train():
@@ -57,54 +78,48 @@ def train():
 
 
 @app.post("/predict")
-# User Upload CSV file containing DATA is same schema as actual.
-# Step - 1: User will upload CSV file.
-# Step - 2: We will validate file using schema.yaml.
-# Step -3 : Then we will import netwwork model and apply feature engineering then predict.
-# Step - 4: Return the response as prediction to user as dictionary format like {ur11: {'prediction':'malicious',confidence:0.98},ur12:{'prediction':'benign',confidence:0.89}...}.
 def predict(file: UploadFile = File(...)):
     try:
-        # Step - 1: Read CSV file
         df = pd.read_csv(file.file)
 
-        # Step - 2: Validate the file schema
-        schema = read_yaml_file("data_schema/schema.yaml")
+        # Schema validation
         df_cols = df.columns.tolist()
         schema_cols = [list(col.keys())[0] for col in schema["columns"]]
-        # Remove target column if present
+
         if "Result" in schema_cols:
             schema_cols.remove("Result")
+
         if df_cols != schema_cols:
-            raise HTTPException(status_code=400, detail="Invalid file schema")
+            raise HTTPException(
+                status_code=400,
+                detail="Invalid file schema"
+            )
 
-        # Step - 3: Load model and apply feature engineering
-        model = load_object("final_model/model.pkl")
-        network_model = NetworkModel(model=model)
-
+        # Feature engineering
         df = network_model.feature_engineering(df)
 
-        # Step - 4: Return the response as prediction to user as dictionary format
-        predictions = model.predict(df)
-
-        # Predict probabilities only if supported
-        prediction_probs = None
-        if hasattr(model, "predict_proba"):
-            prediction_probs = model.predict_proba(df)
+        # Prediction
+        prediction = model.predict(df)
+        probability = model.predict_proba(df) if hasattr(model, "predict_proba") else None
 
         response = {}
+        for i, pred in enumerate(prediction):
+            confidence = None
+            if probability is not None:
+                confidence = {
+                    "non-malicious": float(round(probability[i][0], 4)),
+                    "malicious": float(round(probability[i][1], 4))
+                }
 
-        for i in range(len(df)):
-            response[f"url{i+1}"] = {
-                "prediction": "malicious" if predictions[i] == 1 else "benign",
-                "confidence": float(
-                    max(prediction_probs[i]) if prediction_probs is not None else 1.0
-                )
+            response[f"url_{i+1}"] = {
+                "prediction": "malicious" if pred == 1 else "non-malicious",
+                "confidence": confidence
             }
 
         return JSONResponse(content=response, status_code=200)
 
-    except HTTPException:
-        raise
-
-    except Exception as e:
-        raise NetworkSecurityException(e, sys)
+    except Exception:
+        raise HTTPException(
+            status_code=500,
+            detail="Internal server error during prediction"
+        )
