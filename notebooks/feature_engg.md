@@ -88,9 +88,3 @@ The following 30 features were initially identified for analysis, alongside the 
 > All features were converted to a **binary (0/1) format** by mapping "-1" values to "0". This standardization ensures consistent interpretability of correlations and improves overall model stability.
 
 ---
-
-## SECTION 6: SUMMARY
-
-* **Efficiency:** Reduced total feature count while preserving semantic meaning.
-* **Optimization:** Minimized multicollinearity for cleaner statistical analysis.
-* **Robustness:** Engineered features align closely with domain-specific phishing knowledge.
