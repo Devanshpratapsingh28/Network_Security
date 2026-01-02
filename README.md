@@ -3,9 +3,31 @@
 ## 📖 About
 This project is a production-grade machine learning system designed to identify malicious URLs. It implements a complete MLOps lifecycle from raw data ingestion from database to a containerized FastAPI deployment on AWS. The system utilizes modular pipeline components to ensure scalability, reproducibility, and rigorous data validation. In addition to binary classification, the model provides a confidence score indicating the probability of a URL being phishing, enabling more informed and reliable decision-making.
 
-
 ## 📊 Dataset
 The dataset is sourced from the [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets/Phishing+Websites). It consists of thousands of URLs characterized by **30 distinct features** (e.g., SSL state, URL length, prefix/suffix, domain age). The target variable classifies each URL as either **Legitimate** or **Phishing**.
+
+## 🔗 API Reference
+The API is deployed on AWS EC2 and can be accessed using FastAPI’s Swagger UI:
+👉 **[Interactive API Documentation](http://16.170.205.221:8000/docs)**
+
+## 🐳 Docker Image
+The application is containerized using Docker and is publicly available on Docker Hub:
+
+- **Image Name:** `devanshdkr28/phishingidentifier-api`
+- **Tag:** `1.0`
+
+#### ▶️ Run Using Docker
+You can pull and run the API locally using the following steps:
+
+##### Pull and Run the Docker Image
+```bash
+docker pull devanshdkr28/phishingidentifier-api:1.0
+docker run -d -p 8000:8000 devanshdkr28/phishingidentifier-api:1.0
+```
+##### Access the API
+```bash
+http://localhost:8000/docs
+```
 
 ---
 
@@ -44,7 +66,7 @@ The core of this project is a decoupled, modular architecture where each stage p
 ### 4. Deployment & Orchestration
 * **API:** High-performance **FastAPI** wrapper for the model.
 * **Containerization:** Fully Dockerized environment to ensure "run-anywhere" consistency.
-* **CI/CD Target:** Deployed on **AWS EC2**, exposing a `/predict` endpoint for batch processing.
+* **Deployment:** Deployed on **AWS EC2**, exposing a `/predict` endpoint for batch processing.
 
 ---
 
@@ -52,18 +74,18 @@ The core of this project is a decoupled, modular architecture where each stage p
 ```text
 ├── data_schema/            # YAML definitions for data validation
 ├── networksecurity/
-│   ├── components/         # Modular pipeline stages (Ingestion -> Trainer)
+│   ├── components/         # Modular pipeline stages (Ingestion ->Validation ->Transformation ->Trainer)
 │   ├── entity/             # Data objects for Config and Artifacts
-│   ├── pipelines/          # Training and Batch Prediction orchestrators
+│   ├── pipelines/          # Training pipeline orchestrators
 │   ├── cloud/              # AWS S3 synchronization logic
 │   └── utils/              # Common helpers and ML specific logic
 ├── Artifacts/              # Local store for intermediate data/outputs
-├── saved_models/           # Production-ready model binaries
+├── saved_models/           # Saved models for prediction
 └── app.py                  # FastAPI entry point
 ```
 
 ## 🚀 Installation & Usage
-A. For Local Setup:
+
 1. Set Up Environment:
    ```bash
    # Clone the repository
@@ -102,26 +124,13 @@ A. For Local Setup:
    ```
 
 Note : 
-1. If you want to run the project using Docker, make sure to have Docker installed and run the following command to build and start the container:
+If you want to run the project using Docker, make sure to have Docker installed and run the following command to build and start the container:
 ```bash
 docker build -t phishing-url-detector .
 docker run -d -p 8000:8000 phishing-url-detector
 ```
-
-B. For getting batch predictions using the deployed FastAPI on AWS EC2:
-1. Hit this deployed AWS EC2 URL. [Link](http://16.170.205.221:8000/docs).
-2. Go to the `/predict` endpoint and upload CSV file in desired schema to get batch predictions.
-2. The response will contain the predictions for each URL in the uploaded CSV with confidence scores.
-
 ---
 
-## 🔗 API Reference
-The API is live on AWS EC2. You can interact with the Swagger UI here:
-👉 **[Interactive API Documentation](http://16.170.205.221:8000/docs)**
-
----
-
-## 🛠️ Technologies Used
 
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
