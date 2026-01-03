@@ -37,6 +37,7 @@ http://localhost:8000/docs
 |--------------------|--------------|
 | Language           | Python |
 | Libraries          | pandas, numpy, scikit-learn, matplotlib, seaborn |
+| Backend            | FastAPI |
 | Environment        | Jupyter Notebook |
 | Version Control    | Git, GitHub |
 | MLOps Tools        | Docker (containerization), MLflow (experiment tracking), Dagshub (remote MLflow repository) |
