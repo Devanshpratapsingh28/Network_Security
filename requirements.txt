@@ -63,9 +63,6 @@ mlflow-skinny==3.8.0
 mlflow-tracing==3.8.0
 multidict==6.7.0
 mypy_extensions==1.1.0
--e git+https://github.com/Devanshpratapsingh28/Network_Security.git@6b9a787a43d6b7f126dd0282e827f1c73b7b0675#egg=Network_Security_Project
-numpy==1.26.4
-oauthlib==3.3.1
 opentelemetry-api==1.38.0
 opentelemetry-proto==1.38.0
 opentelemetry-sdk==1.38.0
