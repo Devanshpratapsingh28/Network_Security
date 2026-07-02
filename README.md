@@ -8,7 +8,7 @@ The dataset is sourced from the [UCI Machine Learning Repository](https://archiv
 
 ## 🔗 API Reference
 The API is deployed on AWS EC2 and can be accessed using FastAPI’s Swagger UI:
-👉 **[Interactive API Documentation](http://16.170.205.221:8000/docs)**
+👉 **[Interactive API Documentation](http://100.60.76.152/docs)**
 
 ## 🐳 Docker Image
 The application is containerized using Docker and is publicly available on Docker Hub:
