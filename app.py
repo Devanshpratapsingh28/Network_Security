@@ -11,7 +11,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from networksecurity.utils.main_utils.utils import read_yaml_file, load_object
 from networksecurity.utils.ml_utils.model.estimator import NetworkModel
 from networksecurity.exception.exception import NetworkSecurityException
-from networksecurity.pipelines.training_pipeline import TrainingPipeline
 
 # Loading environment variables
 load_dotenv()
@@ -66,15 +65,6 @@ def index():
 @app.get("/health")
 def health():
     return {"status": "ok"}
-
-@app.get("/train")
-def train():
-    try:
-        training_pipeline = TrainingPipeline()
-        training_pipeline.run_pipeline()
-        return {"message": "Training pipeline executed successfully."}
-    except Exception as e:
-        raise NetworkSecurityException(e, sys)
 
 
 @app.post("/predict")
