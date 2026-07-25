@@ -96,6 +96,7 @@ jobs:
                  -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
                  -e AWS_DEFAULT_REGION=${{ secrets.AWS_REGION }} \
                  -e DAGSHUB_USER_TOKEN=${{ secrets.DAGSHUB_TOKEN }} \
+                 -e MONGO_DB_URI=${{ secrets.MONGO_DB_URI }} \
                  -e SCHEMA_FILE_PATH=data_schema/schema.yaml \
                  -e MODEL_FILE_PATH=saved_models/model.pkl \
                  ${{ secrets.AWS_ECR_LOGIN_URI }}/${{ secrets.ECR_REPOSITORY_NAME }}:latest                     
