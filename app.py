@@ -47,7 +47,7 @@ app = FastAPI(
     description="API for predicting whether a given URL is malicious (i.e. phishing URL) or non-malicious.",
 )
 
-# CORS Enabled
+# CORS Enabled 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
