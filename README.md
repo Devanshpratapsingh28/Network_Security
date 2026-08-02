@@ -1,7 +1,7 @@
-# 🛡️ Phishing URL Detection: End-to-End MLOps Pipeline
+# 🛡️ Phishing URL Detection: End-to-End ML Pipeline
 
 ## 📖 About
-This project is a production-grade machine learning system designed to identify malicious URLs. It implements a complete MLOps lifecycle from raw data ingestion from database to a containerized FastAPI deployment on AWS. The system utilizes modular pipeline components to ensure scalability, reproducibility, and rigorous data validation. In addition to binary classification, the model provides a confidence score indicating the probability of a URL being phishing, enabling more informed and reliable decision-making.
+This project is a production-grade machine learning system designed to identify malicious URLs. It implements a complete core MLOps workflow from raw data ingestion from database to a containerized FastAPI deployment on AWS. The system utilizes modular pipeline components to ensure scalability, reproducibility, and rigorous data validation. In addition to binary classification, the model provides a confidence score indicating the probability of a URL being phishing, enabling more informed and reliable decision-making.
 
 ## 📊 Dataset
 The dataset is sourced from the [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets/Phishing+Websites). It consists of thousands of URLs characterized by **30 distinct features** (e.g., SSL state, URL length, prefix/suffix, domain age). The target variable classifies each URL as either **Legitimate** or **Phishing**.
