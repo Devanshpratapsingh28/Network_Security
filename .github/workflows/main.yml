@@ -19,11 +19,12 @@ jobs:
               run: echo "Linting code..."
             
             - name: Run unit tests
-              run: echo "Running unti tests..."
+              run: echo "Running unit tests..."
 
     build-and-push-ecr-image:
         name: Continuous Delivery
         runs-on: ubuntu-latest
+        needs: integeration
         steps:
             - name: Checkout code
               uses: actions/checkout@v3
